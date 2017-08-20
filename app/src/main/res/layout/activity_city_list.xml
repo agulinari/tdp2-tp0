@@ -6,4 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.tddp2.weatherapp.CityListActivity">
 
+    <include layout="@layout/content_city_list"/>
+
 </android.support.constraint.ConstraintLayout>
