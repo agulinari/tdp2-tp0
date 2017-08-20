@@ -25,12 +25,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static android.R.attr.offset;
+
 public class CityListActivity extends AppCompatActivity {
 
     static final String[] FRUITS = new String[] { "Apple", "Avocado", "Banana",
             "Blueberry", "Coconut", "Durian", "Guava", "Kiwifruit",
             "Jackfruit", "Mango", "Olive", "Pear", "Sugar-apple","Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple",
             "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple","Sugar-apple"};
+
+    static final String[] FILTER = new String[] { "Apple", "Avocado", "Banana",
+            "Jackfruit", "Mango", "Olive", "Pear", "Sugar-apple","Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple",
+            "Sugar-apple", "Sugar-apple","Sugar-apple"};
 
     ListView lv;
     EditText etSearchbox;
@@ -79,34 +85,7 @@ public class CityListActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 // TODO llamar a la api
-
-                String url = "https://ajax.googleapis.com/ajax/services/search/images";
-                AsyncHttpClient client = new AsyncHttpClient();
-                RequestParams params = new RequestParams();
-                params.put("q", "android");
-                params.put("rsz", "8");
-                client.get(url, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        // Root JSON in response is an dictionary i.e { "data : [ ... ] }
-                        // Handle resulting parsed JSON response here
-                        Log.i("OK", response.toString());
-                        final ArrayAdapter adapter = ((ArrayAdapter)lv.getAdapter());
-
-                        ArrayList<String> lst = new ArrayList<String>();
-                        lst.add("Filtro1");
-                        lst.add("Filtro2");
-                        lst.add("Filtro3");
-                        lv.setAdapter(new ArrayAdapter<String>(CityListActivity.this, R.layout.city_item,lst));
-                        
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                        // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                        Log.e("ERROR", res.toString());                    }
-                });
+                getCities(etSearchbox.getText().toString(), 0, 10);
 
             }
 
@@ -133,10 +112,43 @@ public class CityListActivity extends AppCompatActivity {
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
-        final ArrayAdapter adapter = ((ArrayAdapter)lv.getAdapter());
-        adapter.add("Nuevo1");
-        adapter.add("Nuevo2");
-        adapter.add("Nuevo3");
-        adapter.notifyDataSetChanged();
+
+        getCities(etSearchbox.getText().toString(), offset, 10);
+    }
+
+
+    private void getCities(String term, final int offset, int count){
+        String url = "https://ajax.googleapis.com/ajax/services/search/images";
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("q", "android");
+        params.put("rsz", "8");
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // Root JSON in response is an dictionary i.e { "data : [ ... ] }
+                // Handle resulting parsed JSON response here
+                Log.i("OK", response.toString());
+
+                if (offset == 0) {
+
+                    ArrayList<String> lst = new ArrayList<String>(Arrays.asList(FILTER));
+                    ArrayAdapter adapter = new ArrayAdapter<String>(CityListActivity.this, R.layout.city_item,lst);
+                    lv.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+
+                }else{
+                    final ArrayAdapter adapter = ((ArrayAdapter)lv.getAdapter());
+                    adapter.addAll(Arrays.asList(FILTER));
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.e("ERROR", res.toString());                    }
+        });
+
     }
 }
