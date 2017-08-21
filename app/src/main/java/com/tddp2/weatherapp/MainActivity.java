@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadWeatherData() {
+        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+
         String url = "https://ajax.googleapis.com/ajax/services/search/images";
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -71,11 +73,14 @@ public class MainActivity extends AppCompatActivity {
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 updateBackgroundImage(true, 25, "sunny");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
                 Toast toast = Toast.makeText(getBaseContext(), "No fue posible conectarse al servidor, por favor reintente más tarde", 15);
                 toast.show();
             }
