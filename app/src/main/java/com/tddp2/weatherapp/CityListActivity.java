@@ -1,6 +1,8 @@
 package com.tddp2.weatherapp;
 
+import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -59,9 +61,10 @@ public class CityListActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // When clicked, show a toast with the TextView text
-                Toast.makeText(getApplicationContext(),
-                        ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("id", position);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
         });
         // ... the usual
@@ -118,12 +121,14 @@ public class CityListActivity extends AppCompatActivity {
 
 
     private void getCities(String term, final int offset, int count){
-        String url = "https://ajax.googleapis.com/ajax/services/search/images";
+        String url = "https://arcane-badlands-54436.herokuapp.com/cities?term="+term+"&offset="+offset+"&count="+count;
+        Log.i("URL", url);
         AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("q", "android");
-        params.put("rsz", "8");
-        client.get(url, params, new JsonHttpResponseHandler() {
+        //RequestParams params = new RequestParams();
+        //params.put("term", term);
+        //params.put("offset", offset);
+        //params.put("count", count);
+        client.get(url,  new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // Root JSON in response is an dictionary i.e { "data : [ ... ] }
@@ -147,7 +152,14 @@ public class CityListActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Log.e("ERROR", res.toString());                    }
+                Log.e("ERROR", res.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable t, JSONObject res) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.e("ERROR", statusCode+" "+res.toString());
+            }
         });
 
     }
