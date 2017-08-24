@@ -17,6 +17,9 @@ import com.loopj.android.http.RequestParams;
 import cz.msebera.android.httpclient.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private String UNDEFINED_VALUE = "S/D";
@@ -82,13 +85,17 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject data = response.getJSONObject("data");
                     Double temperature = data.getDouble("temperature");
                     String weather = "sunny";
-                    boolean isDayTime = true;
+                    String time = data.getString("time");
 
-                    updateBackgroundImage(isDayTime, temperature, weather);
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-hh:mm", Locale.ENGLISH);
+                    Date date = format.parse(time);
 
                     int roundedTemperature = (int) Math.round(temperature);
+
+
+                    updateBackgroundImage(date, temperature, weather);
                     updateTemperatureText(String.valueOf(roundedTemperature).concat("ºC"));
-                } catch (JSONException e) {
+                } catch (JSONException|java.text.ParseException e) {
                     e.printStackTrace();
                 }
 
@@ -111,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
         temperatureView.setText(temperatureText);
     }
 
-    private void updateBackgroundImage(boolean isDayTime, Double temperature, String weather) {
+    private void updateBackgroundImage(Date date, Double temperature, String weather) {
+        int hours = date.getHours();
+        boolean isDayTime = (9 <= hours) && (17 >= hours);
         int imageId = this.getImageId(isDayTime, temperature, weather);
         ImageView backgroundWeatherImage = (ImageView) findViewById(R.id.background_weather_image);
         backgroundWeatherImage.setImageResource(imageId);
