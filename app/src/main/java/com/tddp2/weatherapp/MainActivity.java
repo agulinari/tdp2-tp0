@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+            public void onFailure(int statusCode, Header[] headers, Throwable t, JSONObject response) {
                 findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
                 Toast toast = Toast.makeText(getBaseContext(), "No fue posible conectarse al servidor, por favor reintente más tarde", 15);
