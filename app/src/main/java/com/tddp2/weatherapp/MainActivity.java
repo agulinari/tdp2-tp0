@@ -15,9 +15,14 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import cz.msebera.android.httpclient.Header;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
+    private String UNDEFINED_VALUE = "S/D";
+    private String SERVER_URL_1 = "https://arcane-badlands-54436.herokuapp.com";
+    private String SERVER_URL_2 = "https://lit-cove-37031.herokuapp.com";
+    private int NEW_YORK_CITY_ID = 5128638;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +69,29 @@ public class MainActivity extends AppCompatActivity {
     private void loadWeatherData() {
         findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
 
-        String url = "https://ajax.googleapis.com/ajax/services/search/images";
+        String url = SERVER_URL_1 + "/city/" + NEW_YORK_CITY_ID;
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("q", "android");
-        params.put("rsz", "8");
 
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                updateBackgroundImage(true, 25, "sunny");
+                try {
+                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
+                    JSONObject data = response.getJSONObject("data");
+                    Double temperature = data.getDouble("temperature");
+                    String weather = "sunny";
+                    boolean isDayTime = true;
+
+                    updateBackgroundImage(isDayTime, temperature, weather);
+
+                    int roundedTemperature = (int) Math.round(temperature);
+                    updateTemperatureText(String.valueOf(roundedTemperature).concat("ºC"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
@@ -83,17 +100,24 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast toast = Toast.makeText(getBaseContext(), "No fue posible conectarse al servidor, por favor reintente más tarde", 15);
                 toast.show();
+
+                updateTemperatureText(UNDEFINED_VALUE);
             }
         });
     }
 
-    private void updateBackgroundImage(boolean isDayTime, int temperature, String weather) {
+    private void updateTemperatureText(String temperatureText) {
+        TextView temperatureView = (TextView)findViewById(R.id.temperature);
+        temperatureView.setText(temperatureText);
+    }
+
+    private void updateBackgroundImage(boolean isDayTime, Double temperature, String weather) {
         int imageId = this.getImageId(isDayTime, temperature, weather);
         ImageView backgroundWeatherImage = (ImageView) findViewById(R.id.background_weather_image);
         backgroundWeatherImage.setImageResource(imageId);
     }
 
-    private int getImageId(boolean isDayTime, int temperature, String weather) {
+    private int getImageId(boolean isDayTime, Double temperature, String weather) {
         if (isDayTime) {
             if (weather.equals("sunny")) {
                 if (temperature > 20) {

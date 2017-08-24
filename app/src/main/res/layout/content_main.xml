@@ -14,11 +14,25 @@
             android:layout_height="match_parent"
             android:id="@+id/background_weather_image"
             android:scaleType="centerCrop"/>
-
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:weightSum="1">
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.40"
+                android:textAlignment="center"
+                android:background="@android:color/transparent"
+                android:textColor="@color/weatherLetters"
+                android:textSize="80sp"
+                android:shadowColor="@android:color/black"
+                android:shadowRadius="20"
+                android:id="@+id/temperature"
+        />
+    </LinearLayout>
     <RelativeLayout
             android:id="@+id/loadingPanel"
             android:layout_width="match_parent"
