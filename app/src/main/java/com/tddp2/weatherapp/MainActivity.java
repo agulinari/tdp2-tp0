@@ -109,15 +109,11 @@ public class MainActivity extends AppCompatActivity {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-hh:mm", Locale.ENGLISH);
                     Date date = format.parse(time);
 
-                    int roundedTemperature = (int) Math.round(temperature);
-
-
                     updateBackgroundImage(date, temperature, weather);
-                    updateTemperatureText(String.valueOf(roundedTemperature).concat("ºC"));
+                    updateTemperatureText(temperature);
                 } catch (JSONException|java.text.ParseException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -127,12 +123,17 @@ public class MainActivity extends AppCompatActivity {
                 Toast toast = Toast.makeText(getBaseContext(), "No fue posible conectarse al servidor, por favor reintente más tarde", Toast.LENGTH_SHORT);
                 toast.show();
 
-                updateTemperatureText(UNDEFINED_VALUE);
+                TextView temperatureView = (TextView)findViewById(R.id.temperature);
+                if (temperatureView.getText() == "") {
+                    temperatureView.setText(UNDEFINED_VALUE);
+                }
             }
         });
     }
 
-    private void updateTemperatureText(String temperatureText) {
+    private void updateTemperatureText(Double temperature) {
+        int roundedTemperature = (int) Math.round(temperature);
+        String temperatureText = String.valueOf(roundedTemperature).concat("ºC");
         TextView temperatureView = (TextView)findViewById(R.id.temperature);
         temperatureView.setText(temperatureText);
     }
