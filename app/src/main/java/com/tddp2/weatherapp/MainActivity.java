@@ -79,8 +79,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
 
             if (resultCode == Activity.RESULT_OK) {
-                String result = data.getStringExtra("id");
-                Log.i("ID", result);
+                String id = data.getStringExtra("id");
+                String name = data.getStringExtra("name");
+                Log.i("ID", id);
+                Log.i("CITY NAME", name);
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result

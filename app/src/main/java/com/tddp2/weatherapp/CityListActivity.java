@@ -67,6 +67,7 @@ public class CityListActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 Log.i("ITEM", item.getId() + " " + item.getName());
                 intent.putExtra("id", item.getId());
+                intent.putExtra("name", item.getName());
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
