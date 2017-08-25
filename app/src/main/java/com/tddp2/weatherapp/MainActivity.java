@@ -22,29 +22,35 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
     private String UNDEFINED_VALUE = "S/D";
     private String SERVER_URL_1 = "https://arcane-badlands-54436.herokuapp.com";
     private String SERVER_URL_2 = "https://lit-cove-37031.herokuapp.com";
-    private int NEW_YORK_CITY_ID = 5128638;
+    private String NEW_YORK_CITY_ID = "5128638";
+    private String NEW_YORK_CITY_NAME = "New York (US)";
 
     public static final int REQUEST_CODE = 1;
+    private final String CITY_ID = "cityId";
+    private final String CITY_NAME = "city";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadWeatherDataOfLastCity();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        this.loadWeatherData();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadWeatherData();
+                loadWeatherDataOfLastCity();
             }
         });
     }
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 String name = data.getStringExtra("name");
                 Log.i("ID", id);
                 Log.i("CITY NAME", name);
+                saveLastCity(id, name);
+                loadWeatherData(id, name);
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result
@@ -90,10 +98,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadWeatherData() {
+    private void loadWeatherData(String cityId, String cityName) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(cityName);
+
         findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
 
-        String url = SERVER_URL_1 + "/city/" + NEW_YORK_CITY_ID;
+        String url = SERVER_URL_1 + "/city/" + cityId;
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
 
@@ -104,17 +115,19 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
                     JSONObject data = response.getJSONObject("data");
+                    Log.i("Weather", "Response: " + data.toString());
+
                     Double temperature = data.getDouble("temperature");
                     String weather = "sunny";
                     String time = data.getString("time");
 
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-hh:mm", Locale.ENGLISH);
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
                     Date date = format.parse(time);
 
                     updateBackgroundImage(date, temperature, weather);
                     updateTemperatureText(temperature);
                 } catch (JSONException|java.text.ParseException e) {
-                    e.printStackTrace();
+                    Log.e("ERROR", e.getMessage());
                 }
             }
 
@@ -131,6 +144,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void loadWeatherDataOfLastCity() {
+        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        String id = settings.getString(CITY_ID, NEW_YORK_CITY_ID);
+        String name = settings.getString(CITY_NAME, NEW_YORK_CITY_NAME);
+        this.loadWeatherData(id, name);
+    }
+
+    private void saveLastCity(String cityId, String cityName) {
+        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(CITY_ID, cityId);
+        editor.putString(CITY_NAME, cityName);
+        editor.apply();
     }
 
     private void updateTemperatureText(Double temperature) {
