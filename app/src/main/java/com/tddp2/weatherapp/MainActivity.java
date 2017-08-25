@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
 
             if (resultCode == Activity.RESULT_OK) {
-                int result = data.getIntExtra("id", 0);
-                Log.i("ID", String.valueOf(result));
+                String result = data.getStringExtra("id");
+                Log.i("ID", result);
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // some stuff that will happen if there's no result

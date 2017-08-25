@@ -22,12 +22,14 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.tddp2.weatherapp.com.tddp2.weatherapp.listener.EndlessScrollListener;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static android.R.attr.offset;
+import static android.os.Build.VERSION_CODES.M;
 
 public class CityListActivity extends AppCompatActivity {
 
@@ -48,21 +50,23 @@ public class CityListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_list);
 
-        ArrayList<String> lst = new ArrayList<String>(Arrays.asList(FRUITS));
+        ArrayList<CityItem> lst = new ArrayList<CityItem>();
 
 
         etSearchbox=(EditText)findViewById(R.id.etSearchbox);
         lv=(ListView)findViewById(R.id.lvCities);
 
-        lv.setAdapter(new ArrayAdapter<String>(this, R.layout.city_item,lst));
+        lv.setAdapter(new ArrayAdapter<CityItem>(this, R.layout.city_item,lst));
 
         lv.setTextFilterEnabled(true);
 
         lv.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                CityItem item = (CityItem)lv.getItemAtPosition(position);
                 Intent intent = new Intent();
-                intent.putExtra("id", position);
+                Log.i("ITEM", item.getId() + " " + item.getName());
+                intent.putExtra("id", item.getId());
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
@@ -76,7 +80,9 @@ public class CityListActivity extends AppCompatActivity {
             public boolean onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to your AdapterView
-                loadNextDataFromApi(page);
+                Log.i("PAGE", String.valueOf(page));
+                Log.i("ITEM COUNT", String.valueOf(totalItemsCount));
+                loadNextDataFromApi(totalItemsCount);
                 // or loadNextDataFromApi(totalItemsCount);
                 return true; // ONLY if more data is actually being loaded; false otherwise.
             }
@@ -88,7 +94,7 @@ public class CityListActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 // TODO llamar a la api
-                getCities(etSearchbox.getText().toString(), 0, 10);
+                getCities(etSearchbox.getText().toString(), 0, 50);
 
             }
 
@@ -116,7 +122,7 @@ public class CityListActivity extends AppCompatActivity {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
 
-        getCities(etSearchbox.getText().toString(), offset, 10);
+        getCities(etSearchbox.getText().toString(), offset, 50);
     }
 
 
@@ -124,27 +130,37 @@ public class CityListActivity extends AppCompatActivity {
         String url = "https://arcane-badlands-54436.herokuapp.com/cities?term="+term+"&offset="+offset+"&count="+count;
         Log.i("URL", url);
         AsyncHttpClient client = new AsyncHttpClient();
-        //RequestParams params = new RequestParams();
-        //params.put("term", term);
-        //params.put("offset", offset);
-        //params.put("count", count);
+
         client.get(url,  new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // Root JSON in response is an dictionary i.e { "data : [ ... ] }
                 // Handle resulting parsed JSON response here
-                Log.i("OK", response.toString());
+
+                ArrayList<CityItem> lst = new ArrayList<CityItem>();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject obj = response.getJSONObject(i);
+                        String id = obj.getString("id");
+                        String name = obj.getString("name");
+                        String country = obj.getString("country");
+                        CityItem city = new CityItem();
+                        city.setId(id);
+                        city.setName(name + " (" + country + ")");
+                        lst.add(city);
+                    }catch(Exception e){
+                        Log.e("ERROR", e.getMessage());
+                    }
+                }
 
                 if (offset == 0) {
-
-                    ArrayList<String> lst = new ArrayList<String>(Arrays.asList(FILTER));
-                    ArrayAdapter adapter = new ArrayAdapter<String>(CityListActivity.this, R.layout.city_item,lst);
+                    ArrayAdapter adapter = new ArrayAdapter<CityItem>(CityListActivity.this, R.layout.city_item,lst);
                     lv.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
 
                 }else{
                     final ArrayAdapter adapter = ((ArrayAdapter)lv.getAdapter());
-                    adapter.addAll(Arrays.asList(FILTER));
+                    adapter.addAll(lst);
                     adapter.notifyDataSetChanged();
                 }
             }
