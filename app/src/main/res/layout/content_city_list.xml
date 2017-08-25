@@ -9,6 +9,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
+    <ProgressBar
+        android:id="@+id/loadingBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"
+
+        />
     <ListView
         android:id="@+id/lvCities"
         android:layout_width="fill_parent"
