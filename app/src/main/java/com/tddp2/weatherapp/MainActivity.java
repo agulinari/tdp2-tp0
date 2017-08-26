@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (temperature < 8) {
                     return R.drawable.day_sunny_hot; //pareja abrigada sosteniendo un paraguas debajo de la tormenta
                 } else {
-                    return R.drawable.day_sunny_hot; //ciudad lluviosa
+                    return R.drawable.day_rainy_warm; //ciudad lluviosa
                 }
             }
         } else {
