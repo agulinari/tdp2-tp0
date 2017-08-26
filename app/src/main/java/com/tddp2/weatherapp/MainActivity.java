@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePressureText(Double pressure) {
         int roundedPressure = (int) Math.round(pressure);
-        String pressureText = String.valueOf(roundedPressure).concat("Hpa");
+        String pressureText = String.valueOf(roundedPressure).concat(" Hpa");
         TextView pressureView = (TextView)findViewById(R.id.pressure);
         pressureView.setText(pressureText);
     }
