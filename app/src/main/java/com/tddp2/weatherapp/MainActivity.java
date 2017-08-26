@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 if (temperature > 20) {
                     return R.drawable.day_cloudy_hot; //selva con cielo nublado
                 } else if (temperature < 8) {
-                    return R.drawable.day_sunny_hot; //puente cubierto por nubes
+                    return R.drawable.day_cloudy_cold; //puente cubierto por nubes
                 } else {
                     return R.drawable.day_cloudy_warm; //ciudad nublada
                 }
