@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             if (weather.equals("rainy")) {
                 return R.drawable.day_sunny_hot; //una tormenta a través de una ventana mojada.
             } else {
-                return R.drawable.day_sunny_hot; //noche estrellada
+                return R.drawable.night_stars; //noche estrellada
             }
         }
     }
