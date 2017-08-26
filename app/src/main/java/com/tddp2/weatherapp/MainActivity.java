@@ -188,11 +188,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (weather.equals("cloudy")) {
                 if (temperature > 20) {
-                    return R.drawable.day_sunny_hot; //selva con cielo nublado
+                    return R.drawable.day_cloudy_hot; //selva con cielo nublado
                 } else if (temperature < 8) {
                     return R.drawable.day_sunny_hot; //puente cubierto por nubes
                 } else {
-                    return R.drawable.day_sunny_hot; //ciudad nublada
+                    return R.drawable.day_cloudy_warm; //ciudad nublada
                 }
             } else {
                 if (temperature > 20) {
