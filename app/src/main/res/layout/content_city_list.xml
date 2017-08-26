@@ -6,6 +6,7 @@
 
     <EditText
         android:id="@+id/etSearchbox"
+        android:hint="Ingrese la Ciudad"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
