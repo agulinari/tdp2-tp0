@@ -33,15 +33,6 @@ import static android.os.Build.VERSION_CODES.M;
 
 public class CityListActivity extends AppCompatActivity {
 
-    static final String[] FRUITS = new String[] { "Apple", "Avocado", "Banana",
-            "Blueberry", "Coconut", "Durian", "Guava", "Kiwifruit",
-            "Jackfruit", "Mango", "Olive", "Pear", "Sugar-apple","Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple",
-            "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple","Sugar-apple"};
-
-    static final String[] FILTER = new String[] { "Apple", "Avocado", "Banana",
-            "Jackfruit", "Mango", "Olive", "Pear", "Sugar-apple","Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple", "Sugar-apple",
-            "Sugar-apple", "Sugar-apple","Sugar-apple"};
-
     ListView lv;
     EditText etSearchbox;
 
@@ -52,7 +43,7 @@ public class CityListActivity extends AppCompatActivity {
 
         ArrayList<CityItem> lst = new ArrayList<CityItem>();
 
-
+        findViewById(R.id.loadingBar).setVisibility(View.GONE);
         etSearchbox=(EditText)findViewById(R.id.etSearchbox);
         lv=(ListView)findViewById(R.id.lvCities);
 
@@ -94,9 +85,7 @@ public class CityListActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                // TODO llamar a la api
                 getCities(etSearchbox.getText().toString(), 0, 50);
-
             }
 
             @Override
@@ -130,6 +119,7 @@ public class CityListActivity extends AppCompatActivity {
     private void getCities(String term, final int offset, int count){
         String url = "https://arcane-badlands-54436.herokuapp.com/cities?term="+term+"&offset="+offset+"&count="+count;
         Log.i("URL", url);
+        findViewById(R.id.loadingBar).setVisibility(View.VISIBLE);
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(url,  new JsonHttpResponseHandler() {
@@ -164,18 +154,22 @@ public class CityListActivity extends AppCompatActivity {
                     adapter.addAll(lst);
                     adapter.notifyDataSetChanged();
                 }
+
+                findViewById(R.id.loadingBar).setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 Log.e("ERROR", res.toString());
+                findViewById(R.id.loadingBar).setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable t, JSONObject res) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 Log.e("ERROR", statusCode+" "+res.toString());
+                findViewById(R.id.loadingBar).setVisibility(View.GONE);
             }
         });
 
