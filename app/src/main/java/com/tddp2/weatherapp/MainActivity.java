@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 if (temperature > 20) {
-                    return R.drawable.day_sunny_hot; //calle de una ciudad balnearia bajo una lluvia torrencial
+                    return R.drawable.day_rainy_hot; //calle de una ciudad balnearia bajo una lluvia torrencial
                 } else if (temperature < 8) {
                     return R.drawable.day_sunny_hot; //pareja abrigada sosteniendo un paraguas debajo de la tormenta
                 } else {
