@@ -144,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
                 if (temperatureView.getText() == "") {
                     temperatureView.setText(UNDEFINED_VALUE);
                 }
+                TextView pressureView = (TextView)findViewById(R.id.pressure);
+                if (pressureView.getText() == "") {
+                    pressureView.setText(UNDEFINED_VALUE);
+                }
             }
         });
     }
