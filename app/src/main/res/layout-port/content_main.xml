@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_main"
+        tools:context="com.tddp2.weatherapp.MainActivity">
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/background_weather_image"
+            android:scaleType="centerCrop"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:gravity="top"
+                  android:layout_marginTop="60dp">
+        <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="@color/weatherLetters"
+                android:shadowColor="@android:color/black"
+                android:shadowRadius="20"
+                android:textSize="80sp"
+                android:layout_gravity="center"
+                android:id="@+id/temperature"
+        />
+        <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="@color/weatherLetters"
+                android:shadowColor="@android:color/black"
+                android:shadowRadius="20"
+                android:textSize="60sp"
+                android:layout_gravity="center"
+                android:id="@+id/pressure"
+        />
+    </LinearLayout>
+    <RelativeLayout
+            android:id="@+id/loadingPanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center" >
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/loadingPanel"
+                android:indeterminate="true"/>
+    </RelativeLayout>
+</RelativeLayout>

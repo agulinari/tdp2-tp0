@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("Weather", "Response: " + data.toString());
 
                     Double temperature = data.getDouble("temperature");
+                    Double pressure = data.getDouble("pressure");
                     String weather = data.getString("weather");
                     String time = data.getString("time");
 
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
                     updateBackgroundImage(date, temperature, weather);
                     updateTemperatureText(temperature);
+                    updatePressureText(pressure);
                 } catch (JSONException|java.text.ParseException e) {
                     Log.e("ERROR", e.getMessage());
                 }
@@ -166,6 +168,13 @@ public class MainActivity extends AppCompatActivity {
         String temperatureText = String.valueOf(roundedTemperature).concat("ºC");
         TextView temperatureView = (TextView)findViewById(R.id.temperature);
         temperatureView.setText(temperatureText);
+    }
+
+    private void updatePressureText(Double pressure) {
+        int roundedPressure = (int) Math.round(pressure);
+        String pressureText = String.valueOf(roundedPressure).concat("Hpa");
+        TextView pressureView = (TextView)findViewById(R.id.pressure);
+        pressureView.setText(pressureText);
     }
 
     private void updateBackgroundImage(Date date, Double temperature, String weather) {
