@@ -46,7 +46,7 @@ public class CityListActivity extends AppCompatActivity {
         findViewById(R.id.loadingBar).setVisibility(View.GONE);
         etSearchbox=(EditText)findViewById(R.id.etSearchbox);
         lv=(ListView)findViewById(R.id.lvCities);
-
+        lv.setEmptyView(findViewById(R.id.empty_list_view));
         lv.setAdapter(new ArrayAdapter<CityItem>(this, R.layout.city_item,lst));
 
         lv.setTextFilterEnabled(true);
@@ -151,22 +151,27 @@ public class CityListActivity extends AppCompatActivity {
                     adapter.addAll(lst);
                     adapter.notifyDataSetChanged();
                 }
-
+                if (lst.isEmpty()){
+                    TextView empty = (TextView) lv.getEmptyView();
+                    empty.setText(R.string.no_data);
+                }
                 findViewById(R.id.loadingBar).setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Log.e("ERROR", res.toString());
+
                 findViewById(R.id.loadingBar).setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable t, JSONObject res) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Log.e("ERROR", statusCode+" "+res.toString());
+                Log.e("ERROR", String.valueOf(statusCode));
                 findViewById(R.id.loadingBar).setVisibility(View.GONE);
+                TextView empty = (TextView) lv.getEmptyView();
+                empty.setText(R.string.no_connection);
             }
         });
 
