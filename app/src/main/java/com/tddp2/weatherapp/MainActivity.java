@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("Weather", "Response: " + data.toString());
 
                     Double temperature = data.getDouble("temperature");
-                    String weather = "sunny";
+                    String weather = data.getString("weather");
                     String time = data.getString("time");
 
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
