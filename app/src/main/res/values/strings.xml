@@ -2,5 +2,5 @@
     <string name="app_name">weatherApp</string>
     <string name="action_settings">Ciudades</string>
     <string name="no_connection">Sin conexión</string>
-    <string name="no_data">Sin datos</string>
+    <string name="no_data">Sin resultados</string>
 </resources>
