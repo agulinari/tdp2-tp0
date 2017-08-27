@@ -45,6 +45,7 @@ public class CityListActivity extends AppCompatActivity {
 
         findViewById(R.id.loadingBar).setVisibility(View.GONE);
         etSearchbox=(EditText)findViewById(R.id.etSearchbox);
+        etSearchbox.requestFocus();
         lv=(ListView)findViewById(R.id.lvCities);
         lv.setEmptyView(findViewById(R.id.empty_list_view));
         lv.setAdapter(new ArrayAdapter<CityItem>(this, R.layout.city_item,lst));
@@ -170,6 +171,9 @@ public class CityListActivity extends AppCompatActivity {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
                 Log.e("ERROR", String.valueOf(statusCode));
                 findViewById(R.id.loadingBar).setVisibility(View.GONE);
+                final ArrayAdapter adapter = ((ArrayAdapter)lv.getAdapter());
+                adapter.clear();
+                adapter.notifyDataSetChanged();
                 TextView empty = (TextView) lv.getEmptyView();
                 empty.setText(R.string.no_connection);
             }
